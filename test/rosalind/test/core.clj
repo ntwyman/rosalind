@@ -10,3 +10,7 @@
 
 (deftest reverse_complement 
 	(is (test_str REVC "AAAACCCGGT" "ACCGGGTTTT")))
+
+(deftest test-HAMM
+	(is (= (HAMM "GAGCCTACTAACGGGAT" "CATCGTAATGACGGCCT") 7)))
+
