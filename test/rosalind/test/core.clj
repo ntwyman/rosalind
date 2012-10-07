@@ -2,6 +2,11 @@
   (:use [rosalind.core])
   (:use [clojure.test]))
 
-(deftest simple-test
-  (is (= (hello) "Hello world!"))
-  (is (= (hello "test") "Hello test!")))
+(defn test_str [f in out]
+	(= (apply str (f in)) out))
+	
+(deftest rna-test 
+	(is (test_str rna_trans "GATGGAACTTGACTACGTAAATT" "GAUGGAACUUGACUACGUAAAUU" )))
+
+(deftest reverse_complement 
+	(is (test_str REVC "AAAACCCGGT" "ACCGGGTTTT")))

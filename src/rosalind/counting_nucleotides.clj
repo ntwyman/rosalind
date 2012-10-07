@@ -9,7 +9,7 @@
         [as cs (+ 1 gs) ts]
         [as cs gs (+ 1 ts)]))))
 
-(defn count-nucl [data]
+(defn count-neucl [data]
   (loop [counts [0 0 0 0], dna data]
     (if (empty? dna)
       counts
