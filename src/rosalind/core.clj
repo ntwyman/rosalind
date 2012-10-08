@@ -23,7 +23,7 @@
     \U
     neucleotide))
 
-(defn compl [neucleotide]
+(defn trans [neucleotide]
   (if (= neucleotide \A)
     \T
     (if (= neucleotide \C)
@@ -48,15 +48,15 @@
       counts)))
 
 (defn RNA [aseq]
-	(loop [dna aseq trans []]
+	(loop [dna aseq trans (vector-of :char)]
 		(if dna
 			(recur (next dna) (conj trans (rna-neucl (first dna))))
 			trans)))
 
 (defn REVC [xs]
-	(loop [re xs acc {}]
+	(loop [re xs acc ()]
 		(if re
-			(recur (next re) (cons (compl (first re)) acc))
+			(recur (next re) (cons (trans (first re)) acc))
 			acc )))
 
 (defn HAMM [seqa seqb]
@@ -73,7 +73,7 @@
 					ham)))))
 
 (defn PROT [rna]
-	(loop [s rna prot []]
+	(loop [s rna prot (vector-of :char)]
 		(if (>= (count s) 3)
 			(let [codon (get codon-table (subs s 0 3) "")]
 				(if (= codon 0)
