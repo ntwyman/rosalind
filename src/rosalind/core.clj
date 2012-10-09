@@ -39,7 +39,9 @@
       [as (+ 1 cs) gs ts]
       (if (= nucleotide \G)
         [as cs (+ 1 gs) ts]
-        [as cs gs (+ 1 ts)]))))
+	      (if (= nucleotide \T)
+        	[as cs gs (+ 1 ts)]
+        	[as cs gs ts])))))
 
 (defn DNA [aseq]
 	(let [counts (frequencies aseq)]
@@ -103,12 +105,19 @@
 (defn cons-coll [cnts dna [as cs gs ts]]
 	(if cnts
 		(let [[a c g t] (first cnts) x (apply max (first cnts))]
-			(recur (next cnts) (conj dna (get [\A \C \G \T] (.indexOf (first cnts) x))) [ (conj as a) (conj cs c) (conj gs g) (conj ts c)]))
+			(recur (next cnts) (conj dna (get [\A \C \G \T] (.indexOf (first cnts) x))) [ (conj as a) (conj cs c) (conj gs g) (conj ts t)]))
 		[(apply str dna) [as cs gs ts]]))
+
+(defn show_cons_counts [counts c]
+	(loop [cts counts acc [c \:]]
+		(if cts
+			(recur (next cts) (conj (conj acc \ ) (first cts)))
+			(apply str acc))))
 
 (defn CONS [sequences]
 	(let [counts (cons_count_all sequences)] ; vector of [as cs gs ts] for each position in the sequence
-		(let [[consensus [ as cs gs ts]] (cons-coll counts [] [[][][][]])])))	
+		(let [[consensus [as cs gs ts]] (cons-coll counts [] [[][][][]])]
+			[ consensus (show_cons_counts as \A) (show_cons_counts cs \C) (show_cons_counts gs \G) (show_cons_counts ts \T)])))	
 
 
 (defn each_line [file_name func]
