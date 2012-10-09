@@ -100,9 +100,16 @@
 				(recur remainders (conj counts cts)))
 			counts)))
 
+(defn cons-coll [cnts dna [as cs gs ts]]
+	(if cnts
+		(let [[a c g t] (first cnts) x (apply max (first cnts))]
+			(recur (next cnts) (conj dna (get [\A \C \G \T] (.indexOf (first cnts) x))) [ (conj as a) (conj cs c) (conj gs g) (conj ts c)]))
+		[(apply str dna) [as cs gs ts]]))
+
 (defn CONS [sequences]
 	(let [counts (cons_count_all sequences)] ; vector of [as cs gs ts] for each position in the sequence
-		counts))
+		(let [[consensus [ as cs gs ts]] (cons-coll counts [] [[][][][]])])))	
+
 
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
