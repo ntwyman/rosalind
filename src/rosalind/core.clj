@@ -42,10 +42,8 @@
         [as cs gs (+ 1 ts)]))))
 
 (defn DNA [aseq]
-  (loop [dna aseq counts [0 0 0 0]]
-    (if dna
-      (recur (next dna) (count_one counts (first dna)))
-      counts)))
+	(let [counts (frequencies aseq)]
+		[ (get counts \A ) (get counts \C) (get counts \G) (get counts \T)]))
 
 (defn RNA [aseq]
 	(loop [dna aseq trans (vector-of :char)]
@@ -97,15 +95,14 @@
 
 (defn cons_count_all [seq-vec]
 	(loop [sv seq-vec counts []]
-		(if (count (first sv))
+		(if (first sv)
 			(let [[cts remainders] (cons_count_first sv)]
-				(println cts)
-				(println remainders)
 				(recur remainders (conj counts cts)))
 			counts)))
 
 (defn CONS [sequences]
-	(cons_count_all sequences))
+	(let [counts (cons_count_all sequences)] ; vector of [as cs gs ts] for each position in the sequence
+		counts))
 
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
