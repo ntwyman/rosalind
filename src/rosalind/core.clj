@@ -87,7 +87,26 @@
 			(if (> idx 0)
 				(recur dna motif (conj acc idx) idx)
 				acc))))
-	
+
+(defn cons_count_first [seq-vec]
+	(loop [sv seq-vec counts [0 0 0 0] remainders []]
+		(if sv 
+			(let [sv1 (first sv)]			
+				(recur (next sv) (count_one counts (first sv1))  (conj remainders (next sv1))))
+			[counts remainders])))
+
+(defn cons_count_all [seq-vec]
+	(loop [sv seq-vec counts []]
+		(if (count (first sv))
+			(let [[cts remainders] (cons_count_first sv)]
+				(println cts)
+				(println remainders)
+				(recur remainders (conj counts cts)))
+			counts)))
+
+(defn CONS [sequences]
+	(cons_count_all sequences))
+
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
 		(loop [lines (line-seq rdr)]
