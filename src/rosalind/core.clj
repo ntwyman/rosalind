@@ -136,3 +136,7 @@
 			(when lines
 				(println (func (first lines) (second lines)))
 				(recur (next (next lines)))))))
+
+(defn apply_to_lines [file_name func]
+	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
+		(func (line-seq rdr))))
