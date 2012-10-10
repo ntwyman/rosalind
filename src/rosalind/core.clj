@@ -120,6 +120,18 @@
 			[ consensus (show_cons_counts as \A) (show_cons_counts cs \C) (show_cons_counts gs \G) (show_cons_counts ts \T)])))	
 
 
+(defn GC [samples]
+	(loop [s samples [label ratio] ["" (/ 0 1)]]
+		(if s
+			(do
+				(let [[l dna] (first s)]
+					(let [[as cs gs ts] (DNA dna)]
+						(let [r (/ (+ cs gs) (+ as cs gs ts))] 
+							(if (> r ratio)
+								(recur (next s) [l r])
+								(recur (next s) [label ratio]))))))
+			[label ratio])))
+
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
 		(loop [lines (line-seq rdr)]
@@ -140,3 +152,21 @@
 (defn apply_to_lines [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
 		(func (line-seq rdr))))
+
+
+(defn get_fasta_data [lines]
+	(loop [ls lines acc ()]
+		(if (and ls (not= (first (first ls)) \>))
+			(recur (next ls) (concat acc (seq (first ls))))
+			[ls acc])))
+
+(defn fasta [file_name]
+	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
+		(loop [lines (line-seq rdr) acc []]
+			(if lines
+				(let [next_line (first lines)]
+					(if (not= (first next_line) \>)
+						(println "Expected label but got " next_line)
+						(let [label (rest next_line) [next_entry dna] (get_fasta_data (next lines))]
+							(recur next_entry (conj acc [(apply str label) dna])))))
+				acc))))
