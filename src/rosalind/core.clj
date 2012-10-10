@@ -170,3 +170,8 @@
 						(let [label (rest next_line) [next_entry dna] (get_fasta_data (next lines))]
 							(recur next_entry (conj acc [(apply str label) dna])))))
 				acc))))
+
+(defn prn_fasta_gc [file]
+	(let [[lbl ratio] (GC (fasta file))]
+		(println lbl)
+		(println (format "%.2f%%" (float (* ratio 100))))))
