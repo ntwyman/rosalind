@@ -132,12 +132,16 @@
 								(recur (next s) [label ratio]))))))
 			[label ratio])))
 
+(defn top_and_tail [samples])
+	[{} {}])
+
+(defn GRPH [samples]
+	(let [[hds tails] (top_and_tail samples)]
+		)
+
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
-		(loop [lines (line-seq rdr)]
-			(when lines
-				(func (first lines))
-				(recur (next lines))))))
+		(map func lines)))
 
 (defn each_line_println [file_name func]
 	(each_line file_name (fn [s] (println (apply str (func s))))))
@@ -156,7 +160,7 @@
 
 (defn get_fasta_data [lines]
 	(loop [ls lines acc ()]
-		(if (and ls (not= (first (first ls)) \>))
+		(if (and ls (not= (ffirst ls) \>))
 			(recur (next ls) (concat acc (seq (first ls))))
 			[ls acc])))
 
