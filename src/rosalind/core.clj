@@ -18,10 +18,7 @@
 	"UGA" 0 "CGA" \R "AGA" \R "GGA" \G
 	"UGG" \W "CGG" \R "AGG" \R "GGG" \G })
 
-(defn rna-neucl [neucleotide]
-  (if (= neucleotide \T)
-    \U
-    neucleotide))
+(defn rna-neucl [neucl] (if (= neucl \T) \U neucl))
 
 (defn trans [neucleotide]
   (if (= neucleotide \A)
@@ -57,13 +54,7 @@
 	(apply + (map #( if (= %1 %2) 0 1) seqa seqb)))
 
 (defn PROT [rna]
-	(loop [s rna prot (vector-of :char)]
-		(if (>= (count s) 3)
-			(let [codon (get codon-table (subs s 0 3) "")]
-				(if (= codon 0)
-					prot
-					(recur (subs s 3) (conj prot codon))))			
-			prot)))
+	(map #(get codon-table (apply str %1)) (split-at 3 rna)))
 
 (defn SUBS [s t]
 	(loop [dna s motif t acc [] nextpos 0]
