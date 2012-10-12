@@ -48,29 +48,13 @@
 		[ (get counts \A ) (get counts \C) (get counts \G) (get counts \T)]))
 
 (defn RNA [aseq]
-	(loop [dna aseq trans (vector-of :char)]
-		(if dna
-			(recur (next dna) (conj trans (rna-neucl (first dna))))
-			trans)))
+	(map rna-neucl aseq))
 
 (defn REVC [xs]
-	(loop [re xs acc ()]
-		(if re
-			(recur (next re) (cons (trans (first re)) acc))
-			acc )))
+	(reduce #(cons (trans %2) %1) () xs))
 
 (defn HAMM [seqa seqb]
-	(loop [l seqa r seqb ham 0]
-		(if (and l r)
-			(let [ha (first l) hb (first r) xa (next l) xb (next r)]
-				(if (= ha hb)
-					(recur xa xb ham)
-					(recur xa xb (+ 1 ham))))
-			(if l
-				(count l)
-				(if r
-					(count r)
-					ham)))))
+	(apply + (map #( if (= %1 %2) 0 1) seqa seqb)))
 
 (defn PROT [rna]
 	(loop [s rna prot (vector-of :char)]
@@ -132,16 +116,16 @@
 								(recur (next s) [label ratio]))))))
 			[label ratio])))
 
-(defn top_and_tail [samples])
+(defn top_and_tail [samples]
 	[{} {}])
 
 (defn GRPH [samples]
 	(let [[hds tails] (top_and_tail samples)]
-		)
+		))
 
 (defn each_line [file_name func]
 	(with-open [rdr (java.io.BufferedReader. (java.io.FileReader. file_name))]
-		(map func lines)))
+		(map func (line-seq rdr))))
 
 (defn each_line_println [file_name func]
 	(each_line file_name (fn [s] (println (apply str (func s))))))
